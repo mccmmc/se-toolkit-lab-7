@@ -39,6 +39,12 @@
   - [4.10. Questions and answers](#410-questions-and-answers)
   - [4.11. Discussions](#411-discussions)
   - [4.12. Glossary](#412-glossary)
+- [5. Review](#5-review)
+  - [5.1. Transcript coverage](#51-transcript-coverage)
+  - [5.2. Accuracy](#52-accuracy)
+  - [5.3. Files discussed](#53-files-discussed)
+  - [5.4. Format compliance](#54-format-compliance)
+  - [5.5. Internal consistency](#55-internal-consistency)
 
 ## 1. File locations
 
@@ -248,3 +254,30 @@ Extended conversations, off-topic digressions (tools, mentoring experiences, ind
 ### 4.12. Glossary
 
 If the meeting introduced, defined, or clarified any terms, acronyms, or project-specific jargon, include them here. Omit this section if no new terminology was introduced. Write each term as a subsection heading (e.g., `### Sprint Review`) followed by a prose paragraph with the definition. This makes each term individually referenceable via a Markdown anchor.
+
+## 5. Review
+
+Before considering a report final, review it against the following categories. For each finding, cite the relevant transcript line or report line number.
+
+### 5.1. Transcript coverage
+
+Go through the transcript **line by line**. Flag each substantive point, decision, question, disagreement, example, or topic that appears in the transcript but is **missing or under-represented** in the report. Ignore filler, greetings, and non-substantive noise.
+
+### 5.2. Accuracy
+
+Flag each claim in the report that **contradicts** the transcript — wrong speaker attribution, incorrect timestamp, misquoted text, a decision recorded as unanimous when there was dissent, etc.
+
+### 5.3. Files discussed
+
+For every file listed under **Metadata → Files discussed**, verify that the report's references to that file's content (task names, structure, terminology, etc.) are **consistent** with the actual file content.
+Flag each reference in the report that does not match what the file actually says.
+If no files are listed, skip this check.
+
+### 5.4. Format compliance
+
+Check the report against the rules in [Section 3 (General rules)](#3-general-rules) and [Section 4 (Sections)](#4-sections).
+Flag violations — missing sections, items written as bullet lists instead of subsections, bold labels used instead of headings, PII leaks, missing cross-references, etc.
+
+### 5.5. Internal consistency
+
+Check for contradictions **within** the report itself — e.g., a decision that conflicts with an open question, an action point referencing a non-existent decision, broken anchor links, duplicate numbering, etc.

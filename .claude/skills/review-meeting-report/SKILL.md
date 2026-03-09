@@ -13,34 +13,7 @@ Review the meeting report for lab N, iteration M by cross-checking it against th
 3. Read the report at the path from step 2.
 4. Read the transcript at the path from step 2.
 5. If the report's **Metadata → Files discussed** section lists any files, read each of them.
-6. Produce a review covering the categories below. For each finding, cite the relevant transcript timestamp or report line so the author can locate it quickly.
-
-## Review categories
-
-### A. Transcript coverage
-
-Go through the transcript **line by line**. Flag each substantive point, decision, question, disagreement, example, or topic that appears in the transcript but is **missing or under-represented** in the report. Ignore filler, greetings, and non-substantive noise.
-
-### B. Accuracy
-
-Flag each claim in the report that **contradicts** the transcript — wrong speaker attribution, incorrect timestamp, misquoted text, a decision recorded as unanimous when there was dissent, etc.
-
-### C. Files discussed
-
-For every file listed under **Metadata → Files discussed**:
-
-- Verify that the report's references to that file's content (task names, structure, terminology, etc.) are **consistent** with the actual file content.
-- Flag each reference in the report that does not match what the file actually says.
-
-If no files are listed, skip this category and note that explicitly.
-
-### D. Format compliance
-
-Check the report against the rules in [`contributing/conventions/meeting-report.md`](../../../contributing/conventions/meeting-report.md). Flag violations — missing sections, items written as bullet lists instead of subsections, bold labels used instead of headings, PII leaks, missing cross-references, etc.
-
-### E. Internal consistency
-
-Check for contradictions **within** the report itself — e.g., a decision that conflicts with an open question, an action point referencing a non-existent decision, broken anchor links, duplicate numbering, etc.
+6. Produce a review covering the five categories in [Section 5 (Review)](../../../contributing/conventions/meeting-report.md#5-review) of the conventions file. For each finding, cite the relevant transcript timestamp or report line so the author can locate it quickly.
 
 ## Output format
 

@@ -12,6 +12,7 @@ Usage:
 import argparse
 import logging
 import sys
+import socket
 
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Command, CommandStart
@@ -119,7 +120,15 @@ def run_telegram_mode() -> None:
         logger.error("BOT_TOKEN is not configured. Set it in .env.bot.secret")
         sys.exit(1)
 
-    bot = Bot(token=settings.bot_token)
+    from aiogram.client.session.aiohttp import AiohttpSession
+    import aiohttp
+
+    # Configure session with longer timeout and retry
+    timeout = aiohttp.ClientTimeout(total=30, connect=10)
+    connector = aiohttp.TCPConnector(family=socket.AF_INET, ttl_dns_cache=300)
+    session = AiohttpSession(timeout=timeout, connector=connector)
+    bot = Bot(token=settings.bot_token, session=session)
+
     dp = Dispatcher()
 
     # Register command handlers
@@ -133,7 +142,7 @@ def run_telegram_mode() -> None:
     dp.message.register(handle_unknown_command)
 
     logger.info("Starting Telegram bot...")
-    dp.run_polling(bot)
+    dp.run_polling(bot, skip_updates=True)
 
 
 def main() -> None:

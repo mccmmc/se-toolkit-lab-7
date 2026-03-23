@@ -12,7 +12,6 @@ Usage:
 import argparse
 import logging
 import sys
-import socket
 
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Command, CommandStart
@@ -124,11 +123,10 @@ def run_telegram_mode() -> None:
     from aiogram.client.session.aiohttp import AiohttpSession
     import aiohttp
 
-    async def main():
-        # Configure session with longer timeout and IPv4 only
+    async def poll_bot():
+        # Configure session with longer timeout
         timeout = aiohttp.ClientTimeout(total=30, connect=10)
-        connector = aiohttp.TCPConnector(family=socket.AF_INET, ttl_dns_cache=300)
-        session = AiohttpSession(timeout=timeout, connector=connector)
+        session = AiohttpSession(timeout=timeout)
         bot = Bot(token=settings.bot_token, session=session)
 
         dp = Dispatcher()
@@ -146,7 +144,7 @@ def run_telegram_mode() -> None:
         logger.info("Starting Telegram bot...")
         await dp.start_polling(bot, skip_updates=True)
 
-    asyncio.run(main())
+    asyncio.run(poll_bot())
 
 
 def main() -> None:

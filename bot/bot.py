@@ -120,29 +120,33 @@ def run_telegram_mode() -> None:
         logger.error("BOT_TOKEN is not configured. Set it in .env.bot.secret")
         sys.exit(1)
 
+    import asyncio
     from aiogram.client.session.aiohttp import AiohttpSession
     import aiohttp
 
-    # Configure session with longer timeout and retry
-    timeout = aiohttp.ClientTimeout(total=30, connect=10)
-    connector = aiohttp.TCPConnector(family=socket.AF_INET, ttl_dns_cache=300)
-    session = AiohttpSession(timeout=timeout, connector=connector)
-    bot = Bot(token=settings.bot_token, session=session)
+    async def main():
+        # Configure session with longer timeout and IPv4 only
+        timeout = aiohttp.ClientTimeout(total=30, connect=10)
+        connector = aiohttp.TCPConnector(family=socket.AF_INET, ttl_dns_cache=300)
+        session = AiohttpSession(timeout=timeout, connector=connector)
+        bot = Bot(token=settings.bot_token, session=session)
 
-    dp = Dispatcher()
+        dp = Dispatcher()
 
-    # Register command handlers
-    dp.message.register(cmd_start, CommandStart())
-    dp.message.register(cmd_help, Command("help"))
-    dp.message.register(cmd_health, Command("health"))
-    dp.message.register(cmd_labs, Command("labs"))
-    dp.message.register(cmd_scores, Command("scores"))
+        # Register command handlers
+        dp.message.register(cmd_start, CommandStart())
+        dp.message.register(cmd_help, Command("help"))
+        dp.message.register(cmd_health, Command("health"))
+        dp.message.register(cmd_labs, Command("labs"))
+        dp.message.register(cmd_scores, Command("scores"))
 
-    # Handle unknown commands
-    dp.message.register(handle_unknown_command)
+        # Handle unknown commands
+        dp.message.register(handle_unknown_command)
 
-    logger.info("Starting Telegram bot...")
-    dp.run_polling(bot, skip_updates=True)
+        logger.info("Starting Telegram bot...")
+        await dp.start_polling(bot, skip_updates=True)
+
+    asyncio.run(main())
 
 
 def main() -> None:

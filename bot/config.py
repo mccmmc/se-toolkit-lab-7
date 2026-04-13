@@ -40,6 +40,12 @@ class BotConfig:
         self.llm_api_key = os.environ.get(
             "LLM_API_KEY", env_values.get("LLM_API_KEY", "")
         )
+        self.llm_api_base_url = os.environ.get(
+            "LLM_API_BASE_URL", env_values.get("LLM_API_BASE_URL", "http://localhost:42005/v1")
+        )
+        self.llm_api_model = os.environ.get(
+            "LLM_API_MODEL", env_values.get("LLM_API_MODEL", "coder-model")
+        )
     
     def is_configured(self) -> bool:
         """Check if required config is present."""

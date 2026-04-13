@@ -17,6 +17,8 @@ from handlers.commands.commands import (
     handle_scores,
 )
 from handlers.intent_router import handle_natural_language
+from handlers.keyboards import get_start_keyboard, get_help_keyboard, handle_callback
+from config import BotConfig
 
 
 def parse_args():
@@ -74,6 +76,73 @@ async def route_message_async(text: str) -> str:
     return await handle_natural_language(text)
 
 
+def run_telegram_bot():
+    """Run the bot in Telegram polling mode.
+
+    Uses aiogram to connect to Telegram and route messages
+    through the same handlers as --test mode.
+    """
+    from aiogram import Bot, Dispatcher, types
+    from aiogram.filters import Command, CommandStart
+
+    config = BotConfig()
+    if not config.bot_token:
+        print("Error: BOT_TOKEN is not set. Check .env.bot.secret or .env.docker.secret")
+        sys.exit(1)
+
+    bot = Bot(token=config.bot_token)
+    dp = Dispatcher()
+
+    @dp.message(CommandStart())
+    async def cmd_start(message: types.Message):
+        response = handle_start()
+        await message.answer(response, reply_markup=get_start_keyboard())
+
+    @dp.message(Command("help"))
+    async def cmd_help(message: types.Message):
+        response = handle_help()
+        await message.answer(response, reply_markup=get_help_keyboard())
+
+    @dp.message(Command("health"))
+    async def cmd_health(message: types.Message):
+        response = handle_health()
+        await message.answer(response)
+
+    @dp.message(Command("labs"))
+    async def cmd_labs(message: types.Message):
+        response = handle_labs()
+        await message.answer(response)
+
+    @dp.message(Command("scores"))
+    async def cmd_scores(message: types.Message):
+        # Extract lab from command args
+        lab_name = message.text.split(maxsplit=1)[1] if len(message.text.split()) > 1 else None
+        response = handle_scores(lab_name)
+        await message.answer(response)
+
+    @dp.callback_query(lambda c: c.data and c.data.startswith("cmd_"))
+    async def handle_button_callback(callback: types.CallbackQuery):
+        command = handle_callback(callback.data)
+        if command:
+            if command.startswith("/"):
+                response = route_command(command)
+            else:
+                response = await route_message_async(command)
+            await callback.message.answer(response)
+        await callback.answer()
+
+    @dp.message()
+    async def handle_message(message: types.Message):
+        response = await route_message_async(message.text)
+        await message.answer(response)
+
+    async def main():
+        print("Application started", file=sys.stderr)
+        await dp.start_polling(bot)
+
+    asyncio.run(main())
+
+
 def main():
     """Main entry point."""
     args = parse_args()
@@ -84,10 +153,8 @@ def main():
         print(response)
         sys.exit(0)
 
-    # Telegram mode (implemented in later tasks)
-    print("Telegram mode not yet implemented. Use --test mode for now.")
-    print("Example: uv run bot.py --test '/start'")
-    print("Example: uv run bot.py --test 'what labs are available'")
+    # Telegram mode: polling
+    run_telegram_bot()
 
 
 if __name__ == "__main__":

@@ -95,3 +95,56 @@ By the end of this lab, you should be able to say:
 ### Optional
 
 1. [Flutter Web Chatbot](./lab/tasks/optional/task-1.md)
+
+## Deploy
+
+### Prerequisites
+
+- VM with Docker and Docker Compose installed
+- `.env.docker.secret` filled with real values (see `.env.docker.example` for reference)
+- `.env.bot.secret` with `BOT_TOKEN`, `LMS_API_KEY`, `LLM_API_KEY` (for local testing)
+
+### Required environment variables
+
+In `.env.docker.secret`:
+
+| Variable | Description | Example |
+|---|---|---|
+| `BOT_TOKEN` | Telegram bot token | `123456:ABC-DEF...` |
+| `LMS_API_KEY` | Backend API key | `my-secret-api-key` |
+| `LLM_API_KEY` | LLM API key | `my-secret-qwen-key` |
+| `LLM_API_BASE_URL` | LLM API base URL | `http://localhost:42005/v1` |
+| `LLM_API_MODEL` | LLM model name | `coder-model` |
+
+### Deploy commands
+
+```terminal
+# Clone the repo
+git clone <your-repo-url> ~/se-toolkit-lab-7
+cd ~/se-toolkit-lab-7
+
+# Start all services (backend, postgres, caddy, bot)
+docker compose --env-file .env.docker.secret up --build -d
+
+# Check all services are running
+docker compose --env-file .env.docker.secret ps
+
+# Check bot logs
+docker compose --env-file .env.docker.secret logs bot --tail 20
+```
+
+### Verify
+
+```terminal
+# Backend healthy
+curl -sf http://localhost:42002/docs
+
+# Bot responding in Telegram — send /start to your bot
+```
+
+### Troubleshooting
+
+- **Bot container restarting** — check logs: `docker compose logs bot`. Usually a missing env var or import error.
+- **`/health` fails** — `LMS_API_BASE_URL` must be `http://backend:8000` inside Docker, not `localhost`.
+- **LLM queries fail** — `LLM_API_BASE_URL` must use `host.docker.internal` (not `localhost`). The Qwen proxy is on a different Docker network.
+- **"BOT_TOKEN is required"** — ensure `BOT_TOKEN` is in `.env.docker.secret`.
